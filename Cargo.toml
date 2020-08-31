@@ -1,0 +1,20 @@
+[package]
+name = "blog"
+version = "0.1.0"
+authors = ["Alexander Charette <acharette.wake@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rocket         =             "0.4.5"
+rocket_codegen =             "0.4.5"
+rocket_contrib = { version = "0.4.5", default-features = false, features = ["diesel_postgres_pool", "json"] }
+diesel         = { version = "1.4.5", features = ["postgres", "chrono"] }
+dotenv         =             "0.15.0"
+r2d2           =             "0.8.9"
+r2d2-diesel    =             "1.0.0"
+serde          = { version = "1.0.115", features = ["derive"] }
+serde_json     =             "1.0.57"
+chrono         = { version = "0.4.15", features = ["serde"] }
+jsonwebtoken   =             "7.2.0"
