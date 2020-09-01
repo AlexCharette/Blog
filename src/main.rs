@@ -6,6 +6,7 @@
 #[macro_use] extern crate serde;
 extern crate dotenv;
 
+use jsonwebtoken::{ encode, Algorithm, Header, EncodingKey };
 use rocket::request::{ Form, FromFormValue };
 // use rocket::http::String;
 use rocket_contrib::json::{ Json, JsonValue };
@@ -35,9 +36,18 @@ struct Credentials {
     password: String,
 }
 
+// Returns a JWT upon a match
 #[post("/login", format = "json", data = "<credentials>")]
-fn login(conn: db::DbConn, credentials: Json<Credentials>) {
-    
+fn login(conn: db::DbConn, credentials: Json<Credentials>) -> String {
+    let admin_info: Admin = Admin {
+        username: credentials.username.as_str(),
+        password: credentials.password.as_str(),
+    };
+    let result = match db::check_admin(conn, &admin_info) {
+        Ok(_) => encode(&Header::default(), &admin_info, &EncodingKey::from_secret("secret".as_ref())).unwrap(),
+        Err(_) => String::from("Error generating JWT")
+    };
+    result
 }
 
 #[post("/submit-post", format = "json", data = "<new_post>")]

@@ -58,3 +58,9 @@ pub struct NewPostImage<'a> {
     pub post_id: &'a i32,
     pub image_id: &'a i32,
 }
+
+#[derive(Serialize, Queryable)]
+pub struct Admin<'a> {
+    pub username: &'a str,
+    pub password: &'a str,
+}

@@ -2,7 +2,7 @@
 pub mod schema;
 pub mod models;
 
-use self::models::{Post, NewPost, PostRef, NewPostRef, PostImage, NewPostImage};
+use self::models::*;
 use diesel;
 use diesel::prelude::*;
 use diesel::result::Error;
@@ -51,8 +51,11 @@ pub fn get_all_posts(conn: DbConn) -> QueryResult<Json<Vec<Post>>> {
     )
 }
 
-pub fn check_admin() {
+pub fn check_admin(conn: DbConn, admin_info: &Admin) -> QueryResult<String> {
     use schema::admins::dsl::*;
+    admins.filter(username.eq(&admin_info.username).and(password.eq(&admin_info.password)))
+        .select(username)
+        .first::<String>(&*conn)
 }
 
 // Create post: takes NewPost as param

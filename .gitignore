@@ -1,4 +1,5 @@
 /vue/node_modules
 /vue/public
 /target
+/src/db
 .env
