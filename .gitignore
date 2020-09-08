@@ -1,5 +1,7 @@
 /vue/node_modules
 /vue/public
+/vue/assets/images/
+/vue/.env
 /target
-/src/db
+/src
 .env

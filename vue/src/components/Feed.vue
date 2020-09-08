@@ -6,10 +6,10 @@
       </v-col>
 
       <feed-card
-        v-for="(article, i) in paginatedArticles"
-        :key="article.title"
+        v-for="(post, i) in paginatedPosts"
+        :key="post.title"
         :size="layout[i]"
-        :value="article"
+        :value="post"
       />
     </v-row>
 
@@ -59,33 +59,32 @@
 
   export default {
     name: 'Feed',
-
     components: {
       FeedCard: () => import('@/components/FeedCard'),
     },
-
     data: () => ({
       layout: [2, 2, 1, 2, 2, 3, 3, 3, 3, 3, 3],
       page: 1,
     }),
-
     computed: {
-      ...mapState(['articles']),
+      ...mapState(['articles', 'posts']),
       pages () {
-        return Math.ceil(this.articles.length / 11)
+        return Math.max(Math.ceil(this.posts.length / 11), 1)
       },
-      paginatedArticles () {
+      paginatedPosts () {
         const start = (this.page - 1) * 11
         const stop = this.page * 11
 
-        return this.articles.slice(start, stop)
+        return this.posts.slice(start, stop)
       },
     },
-
     watch: {
       page () {
         window.scrollTo(0, 0)
       },
     },
+    mounted: function() {
+      this.$store.dispatch('loadPosts')
+    }
   }
 </script>

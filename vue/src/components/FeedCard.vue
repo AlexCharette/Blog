@@ -10,7 +10,7 @@
       href="#!"
     >
       <v-img
-        :src="require(`@/assets/articles/${value.hero}`)"
+        :src="require(`@/assets/images/${value.images[0]}`)"
         height="100%"
         gradient="rgba(0, 0, 0, .42), rgba(0, 0, 0, .42)"
       >
@@ -35,7 +35,7 @@
             </h3>
 
             <div class="caption">
-              {{ value.author }}<br>Date
+              {{ value.author }}<br>{{ value.date }}
             </div>
           </v-col>
 

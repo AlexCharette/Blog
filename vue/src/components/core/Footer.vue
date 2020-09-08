@@ -6,7 +6,7 @@
   >
     <v-container class="mx-auto">
       <v-row>
-        <v-col cols="9">
+        <!--v-col cols="9">
           <base-btn
             v-for="(item, i) in items"
             :key="i"
@@ -29,7 +29,7 @@
           @click="$vuetify.goTo(0)"
         >
           <v-icon>mdi-chevron-up</v-icon>
-        </base-btn>
+        </base-btn-->
       </v-row>
     </v-container>
   </v-footer>
@@ -38,7 +38,6 @@
 <script>
   export default {
     name: 'CoreFooter',
-
     data: () => ({
       items: [
         {

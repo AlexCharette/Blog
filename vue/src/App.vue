@@ -28,7 +28,7 @@
     },
     created: function() {
       axios.interceptors.response.use(undefined, function(this: any, error) {
-        return new Promise((resolve, reject) => {
+        return new Promise(() => {
           if (error.status === 401 && error.config && !error.config.__isRetryRequest) {
             this.$store.dispatch('authLogout')
           }

@@ -1,11 +1,15 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
+import { auth } from '@/store/auth.module'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  modules: {
+    auth 
+  },
   state: {
     status: '',
     token: localStorage.getItem('user-token') || '',
@@ -29,9 +33,10 @@ export default new Vuex.Store({
     isAuthenticated: state => !!state.token,
     authStatus: state => state.status,
     iconNames: state => state.iconNames,
+    posts: state => state.posts,
     postCategories: state => state.postCategories,
     categories: state => {
-      const categories: any = []
+      const categories: Array<Record<string, any>> = []
 
       for (const article of state.articles) {
         if (
@@ -62,7 +67,8 @@ export default new Vuex.Store({
       state.status = 'success'
       state.token = payload
     },
-    authError: state => (state.status = 'error')
+    authError: state => (state.status = 'error'),
+    authLogout: state => (state.status = ''),
   },
   actions: {
     loadPosts({commit}) {
@@ -74,31 +80,26 @@ export default new Vuex.Store({
     },
     authRequest({ commit, dispatch }, user) {
       return new Promise((resolve, reject) => {
-        commit('authRequest')
-        axios.post('auth', { user })
-          .then(response => {
-            const token = response.data.token
-            localStorage.setItem('user-token', token)
-            commit('authSuccess', token)
-            dispatch('login')
-            resolve(response)
-          })
-          .catch(error => {
-            commit('authError', error)
-            localStorage.removeItem('user-token')
-            reject(error)
-          })
+        const saltRounds = 10
+        bcrypt.hash(user.password, saltRounds, function(err, hash) {
+          user.password = hash
+          commit('authRequest')
+          axios.post('http://localhost:8000/login', user)
+            .then(response => {
+              console.log(response)
+              const token = response.data.token
+              localStorage.setItem('user-token', token)
+              commit('authSuccess', token)
+              dispatch('login')
+              resolve(response)
+            })
+            .catch(error => {
+              commit('authError', error)
+              localStorage.removeItem('user-token')
+              reject(error)
+            })
+        })
       })
     },
-    authLogout({ commit, dispatch }) {
-      return new Promise((resolve, reject) => {
-        commit('authLogout')
-        localStorage.removeItem('user-token')
-        delete axios.defaults.headers.common['Authorization']
-        resolve()
-      })
-    }
   },
-  modules: {
-  }
 })
